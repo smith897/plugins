@@ -198,7 +198,15 @@ class _VideoPlayer {
     ui.platformViewRegistry.registerViewFactory(
         'videoPlayer-$textureId', (int viewId) => videoElement);
 
+    videoElement.onDurationChange.listen((event){
+      print(event);
+      sendInitialized();
+      setBuffering(false);
+    });
     videoElement.onCanPlay.listen((dynamic _) {
+      print(_);
+      print(videoElement.duration);
+      if (videoElement.duration == null || videoElement.duration == double.infinity) return;
       if (!isInitialized) {
         isInitialized = true;
         sendInitialized();
@@ -294,6 +302,7 @@ class _VideoPlayer {
   }
 
   void sendInitialized() {
+    print(videoElement.duration);
     eventController.add(
       VideoEvent(
         eventType: VideoEventType.initialized,
